@@ -9,7 +9,7 @@ defmodule Serum.Post.PreviewGeneratorTest do
 
         Grumpy wizards make toxic brew for the evil queen and jack.
         """
-        |> Earmark.as_html!()
+        |> Earmark.as_html!(footnotes: true)
 
   describe "generate_preview/2" do
     test "returns an empty string when max chars is zero" do
