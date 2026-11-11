@@ -12,20 +12,20 @@ defmodule Serum.DevServerTest do
 
     make_project(tmp_dir)
 
-    {:ok, tmp_dir: tmp_dir, ignore_io: pid}
+    {:ok, test_dir: tmp_dir, ignore_io: pid}
   end
 
   describe "run/2" do
     test "successfully starts the server", ctx do
       Process.group_leader(self(), ctx.ignore_io)
 
-      assert {:ok, pid} = DevServer.run(ctx.tmp_dir, 8080)
+      assert {:ok, pid} = DevServer.run(ctx.test_dir, 8080)
 
       :ok = Supervisor.stop(pid)
     end
 
     test "fails to start the server due to the lack of serum.exs", ctx do
-      dir = ctx.tmp_dir
+      dir = ctx.test_dir
 
       Process.group_leader(self(), ctx.ignore_io)
       File.rename(Path.join(dir, "serum.exs"), Path.join(dir, "serum.exs_"))
@@ -38,7 +38,7 @@ defmodule Serum.DevServerTest do
       Process.group_leader(self(), ctx.ignore_io)
 
       {:ok, sock} = :gen_tcp.listen(8080, [])
-      assert {:error, msg} = DevServer.run(ctx.tmp_dir, 8080)
+      assert {:error, msg} = DevServer.run(ctx.test_dir, 8080)
       assert String.contains?(msg, "8080")
       :ok = :gen_tcp.close(sock)
     end

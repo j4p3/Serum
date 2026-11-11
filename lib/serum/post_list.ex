@@ -80,7 +80,7 @@ defmodule Serum.PostList do
         }
       end)
 
-    [first | rest] = put_adjacent_urls([nil | lists], [])
+    [%__MODULE__{} = first | rest] = put_adjacent_urls([nil | lists], [])
 
     first_dup = %__MODULE__{
       first
@@ -104,7 +104,7 @@ defmodule Serum.PostList do
   defp put_adjacent_urls(lists, acc)
   defp put_adjacent_urls([_last], acc), do: Enum.reverse(acc)
 
-  defp put_adjacent_urls([prev, curr | rest], acc) do
+  defp put_adjacent_urls([prev, %__MODULE__{} = curr | rest], acc) do
     next = List.first(rest)
 
     updated_curr = %__MODULE__{

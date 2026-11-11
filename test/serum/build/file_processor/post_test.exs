@@ -3,7 +3,6 @@ defmodule Serum.Build.FileProcessor.PostTest do
   require Serum.TestHelper
   import Serum.TestHelper, only: :macros
   alias Serum.Build.FileProcessor.Post, as: PostProcessor
-  alias Serum.Project
   alias Serum.Project.Loader, as: ProjectLoader
 
   setup_all do
@@ -75,7 +74,7 @@ defmodule Serum.Build.FileProcessor.PostTest do
   end
 
   describe "process_posts/2 with preety URLs enabled" do
-    setup ctx, do: {:ok, [proj: %Project{ctx.proj | pretty_urls: :posts}]}
+    setup ctx, do: {:ok, [proj: %{ctx.proj | pretty_urls: :posts}]}
 
     test "sets URL and output file path suitable for preety URLs", ctx do
       {:ok, result} = process("posts/good-post.md", ctx.proj)

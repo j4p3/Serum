@@ -12,6 +12,9 @@ defmodule Serum.Build.PageGeneratorTest do
     {bad, _} = Code.eval_file(fixture("precompiled/bad-templates.exs"))
     {state, _} = Code.eval_file(fixture("precompiled/good-gb.exs"))
 
+    good = Serum.TestHelper.modernize_templates(good)
+    bad = Serum.TestHelper.modernize_templates(bad)
+
     {:ok, [fragments: fragments, good: good, bad: bad, state: state]}
   end
 

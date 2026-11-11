@@ -7,11 +7,10 @@ defmodule Serum.Mixfile do
     [
       app: :serum,
       version: @serum_version,
-      elixir: ">= 1.13.0",
+      elixir: "~> 1.16",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: preferred_cli_env(),
       deps: deps(),
       package: package(),
       docs: docs(),
@@ -20,31 +19,34 @@ defmodule Serum.Mixfile do
   end
 
   def application do
-    [extra_applications: [:logger, :eex, :cowboy, :tzdata], mod: {Serum, []}]
+    [extra_applications: [:logger, :eex], mod: {Serum, []}]
   end
 
-  defp preferred_cli_env do
+  def cli do
     [
-      coveralls: :test,
-      "coveralls.detail": :test,
-      "coveralls.travis": :test,
-      "coveralls.html": :test
+      preferred_envs: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
   defp deps do
     [
-      {:earmark, "~> 1.4"},
-      {:file_system, "0.2.10"},
-      {:microscope, ">= 1.4.0"},
-      {:timex, "~> 3.7"},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.14", only: [:test], runtime: false},
-      {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
-      {:floki, "0.33.1"},
-      {:ex_doc, "~> 0.28", only: :dev, runtime: false},
-      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
-      {:mox, "~> 1.0", only: :test}
+      {:mdex, "~> 0.14"},
+      {:file_system, "~> 1.1"},
+      {:bandit, "~> 1.14"},
+      {:plug, "~> 1.20"},
+      {:websock_adapter, "~> 0.5"},
+      {:timex, "~> 4.0"},
+      {:floki, "~> 0.38"},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.18", only: [:test], runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.40", only: :dev, runtime: false},
+      {:mix_test_watch, "~> 1.4", only: :dev, runtime: false},
+      {:mox, "~> 1.3", only: :test}
     ]
   end
 

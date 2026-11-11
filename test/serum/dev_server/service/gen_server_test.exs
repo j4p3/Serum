@@ -23,10 +23,10 @@ defmodule Serum.DevServer.Service.GenServerTest do
     IOProxy.config(mute_err: false)
     on_exit(fn -> IOProxy.config(Keyword.new(io_config)) end)
 
-    {:ok, tmp_dir: tmp_dir}
+    {:ok, test_dir: tmp_dir}
   end
 
-  test "if source_dir/0 returns the source directory", %{tmp_dir: tmp_dir} do
+  test "if source_dir/0 returns the source directory", %{test_dir: tmp_dir} do
     assert tmp_dir === GS.source_dir()
   end
 
@@ -58,7 +58,7 @@ defmodule Serum.DevServer.Service.GenServerTest do
   end
 
   test "if a build process initiated by rebuild/0 may fail", ctx do
-    dir = ctx.tmp_dir
+    dir = ctx.test_dir
 
     File.rename(Path.join(dir, "serum.exs"), Path.join(dir, "serum.exs_"))
 

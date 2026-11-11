@@ -117,7 +117,7 @@ defmodule Serum.DevServer.Service.GenServer do
   def handle_info({:file_event, pid, {path, _}}, %{watcher: pid} = state) do
     ignore? =
       path
-      |> Path.relative_to(state.dir)
+      |> Path.relative_to(Path.expand(state.dir))
       |> Path.split()
       |> Enum.any?(&dotfile?/1)
 

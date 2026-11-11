@@ -11,11 +11,24 @@ defmodule Serum.Markdown do
   @re_post ~r/(?<type>href|src)="(?:%|%25)post:(?<url>[^"]*)"/
   @re_page ~r/(?<type>href|src)="(?:%|%25)page:(?<url>[^"]*)"/
 
+  # GitHub Flavored Markdown with footnotes and "smart" punctuation. Raw HTML
+  # is passed through, as site authors are trusted to write their own markup.
+  @mdex_options [
+    extension: [
+      autolink: true,
+      footnotes: true,
+      strikethrough: true,
+      table: true
+    ],
+    parse: [smart: true],
+    render: [unsafe: true]
+  ]
+
   @doc "Converts a markdown document into HTML."
   @spec to_html(binary(), Project.t()) :: binary()
   def to_html(markdown, proj) do
     markdown
-    |> Earmark.as_html!(footnotes: true)
+    |> MDEx.to_html!(@mdex_options)
     |> process_links(proj)
   end
 

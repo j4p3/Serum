@@ -75,12 +75,7 @@ defmodule Serum.HeaderParser do
 
         with [] <- find_missing(accepted_kv, req_strings),
              {:ok, parsed} <- transform_values(accepted_kv, options, []) do
-          extras =
-            Enum.map(extra_kv, fn {k, v} ->
-              {k, ValueTransformer.transform_value(k, v, :string)}
-            end)
-
-          {:ok, {Map.new(parsed), Map.new(extras), rest_data}}
+          {:ok, {Map.new(parsed), Map.new(extra_kv, &transform_extra/1), rest_data}}
         else
           error -> handle_error(error)
         end
@@ -88,6 +83,11 @@ defmodule Serum.HeaderParser do
       error ->
         handle_error(error)
     end
+  end
+
+  @spec transform_extra({binary(), binary()}) :: {binary(), term()}
+  defp transform_extra({key, value}) do
+    {key, ValueTransformer.transform_value(key, value, :string)}
   end
 
   @spec extract_header(binary, [binary], boolean) :: extract_ok | extract_err
