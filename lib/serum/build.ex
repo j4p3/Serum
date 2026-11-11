@@ -64,7 +64,7 @@ defmodule Serum.Build do
   end
 
   @spec load_plugins(Project.t()) :: Result.t(Project.t())
-  defp load_plugins(proj) do
+  defp load_plugins(%Project{} = proj) do
     with {:ok, plugins} <- Plugin.load_plugins(proj.plugins),
          {:ok, theme} <- Theme.load(proj.theme.module) do
       Plugin.show_info(plugins)

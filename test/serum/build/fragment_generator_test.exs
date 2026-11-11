@@ -25,6 +25,7 @@ defmodule Serum.Build.FragmentGeneratorTest do
   describe "to_fragment/2" do
     test "generates fragments from fragment sources", ctx do
       {templates, _} = Code.eval_file(fixture("precompiled/good-templates.exs"))
+      templates = Serum.TestHelper.modernize_templates(templates)
 
       TS.load(templates, :template)
       GlobalBindings.load(ctx.state)
@@ -43,6 +44,7 @@ defmodule Serum.Build.FragmentGeneratorTest do
 
     test "fails with bad templates", ctx do
       {templates, _} = Code.eval_file(fixture("precompiled/bad-templates.exs"))
+      templates = Serum.TestHelper.modernize_templates(templates)
 
       TS.load(templates, :template)
       GlobalBindings.load(ctx.state)
@@ -58,6 +60,7 @@ defmodule Serum.Build.FragmentGeneratorTest do
 
     test "fails when pages use custom templates which are unavailable", ctx do
       {templates, _} = Code.eval_file(fixture("precompiled/good-templates.exs"))
+      templates = Serum.TestHelper.modernize_templates(templates)
       [page | pages] = ctx.pages
       bad_page = %{page | template: "foobarbaz"}
 
@@ -75,6 +78,7 @@ defmodule Serum.Build.FragmentGeneratorTest do
 
     test "fails when posts use custom templates which are unavailable", ctx do
       {templates, _} = Code.eval_file(fixture("precompiled/good-templates.exs"))
+      templates = Serum.TestHelper.modernize_templates(templates)
       [post | posts] = ctx.posts
       bad_post = %{post | template: "foobarbaz"}
 

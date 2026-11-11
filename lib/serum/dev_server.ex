@@ -3,7 +3,6 @@ defmodule Serum.DevServer do
   The Serum development server.
   """
 
-  alias Serum.DevServer.Logger
   alias Serum.DevServer.Service
   alias Serum.Project
   alias Serum.Project.Loader, as: ProjectLoader
@@ -24,7 +23,8 @@ defmodule Serum.DevServer do
          {:ok, pid} when is_pid(pid) <- do_run(dir, site, port, proj) do
       {:ok, pid}
     else
-      {:error, {:shutdown, {:failed_to_start_child, _, :eaddrinuse}}} ->
+      {:error, {:shutdown, {:failed_to_start_child, _, reason}}}
+      when reason in [:eaddrinuse, {:shutdown, {:failed_to_start_child, :listener, :eaddrinuse}}] ->
         msg =
           "could not start the Serum development server. " <>
             "Make sure the port #{port} is not used by other applications"
@@ -44,24 +44,17 @@ defmodule Serum.DevServer do
   @spec do_run(binary(), binary(), integer(), Project.t()) :: Supervisor.on_start()
   defp do_run(dir, site, port, proj) do
     trap_exit = Process.flag(:trap_exit, true)
-    base = proj.base_url
+    base = URI.parse(proj.base_url).path || "/"
 
-    ms_options = [
+    bandit_options = [
+      plug: {Serum.DevServer.Plug, site: site, base: base},
       port: port,
-      base: base,
-      callbacks: [Logger],
-      index: true,
-      route_overrides: [
-        {"/serum_live_reloader", Serum.DevServer.LiveReloadHandler, nil}
-      ]
+      startup_log: false
     ]
 
     children = [
       {Service.GenServer, {dir, site, port}},
-      %{
-        id: Microscope,
-        start: {Microscope, :start_link, [site, ms_options]}
-      }
+      {Bandit, bandit_options}
     ]
 
     sup_opts = [strategy: :one_for_one, name: Serum.DevServer.Supervisor]

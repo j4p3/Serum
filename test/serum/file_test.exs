@@ -18,13 +18,13 @@ defmodule Serum.FileTest do
       File.rm_rf!(tmp_dir)
     end)
 
-    [tmp_dir: tmp_dir]
+    [test_dir: tmp_dir]
   end
 
   describe "read/1" do
     test "successfully read a file", context do
       file = %Serum.File{
-        src: Path.join(context.tmp_dir, "file1"),
+        src: Path.join(context.test_dir, "file1"),
         dest: nil,
         in_data: nil,
         out_data: nil
@@ -37,7 +37,7 @@ defmodule Serum.FileTest do
 
     test "try to read a file that does not exist", context do
       file = %Serum.File{
-        src: Path.join(context.tmp_dir, "asdfasdf"),
+        src: Path.join(context.test_dir, "asdfasdf"),
         dest: nil,
         in_data: nil,
         out_data: nil
@@ -57,7 +57,7 @@ defmodule Serum.FileTest do
     test "successfully write a file", context do
       file = %Serum.File{
         src: nil,
-        dest: Path.join(context.tmp_dir, "file2"),
+        dest: Path.join(context.test_dir, "file2"),
         in_data: nil,
         out_data: "Lorem ipsum dolor sit amet\n"
       }
@@ -66,11 +66,11 @@ defmodule Serum.FileTest do
         assert {:ok, ^file} = Serum.File.write(file)
       end)
 
-      assert file.out_data === File.read!(Path.join(context.tmp_dir, "file2"))
+      assert file.out_data === File.read!(Path.join(context.test_dir, "file2"))
     end
 
     test "write a file in a directory without a write permission", context do
-      tmp_dir2 = Path.join(context.tmp_dir, "test")
+      tmp_dir2 = Path.join(context.test_dir, "test")
 
       File.mkdir_p!(tmp_dir2)
       File.chmod!(tmp_dir2, 0o555)

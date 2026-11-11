@@ -2,21 +2,16 @@ defmodule Serum.DevServer.LiveReloadHandler do
   @moduledoc false
 
   _moduledocp = """
-  A Cowboy Websocket handler that sends signals to clients on file events.
+  A WebSock handler that sends signals to clients on file events.
   """
 
-  @behaviour :cowboy_websocket
+  @behaviour WebSock
 
   import Serum.IOProxy, only: [put_err: 2, put_msg: 2]
   alias Serum.DevServer.Service
 
   @impl true
-  def init(req, state) do
-    {:cowboy_websocket, req, state, %{idle_timeout: :infinity}}
-  end
-
-  @impl true
-  def websocket_init(state) do
+  def init(state) do
     put_msg(:info, "Live Reloader: WebSocket connected.")
     Service.GenServer.subscribe()
 
@@ -24,23 +19,23 @@ defmodule Serum.DevServer.LiveReloadHandler do
   end
 
   @impl true
-  def websocket_handle(message, state) do
+  def handle_in(message, state) do
     put_err(:warn, "Live Reloader: Ignoring a message from client: #{inspect(message)}")
 
     {:ok, state}
   end
 
   @impl true
-  def websocket_info(message, state)
+  def handle_info(message, state)
 
-  def websocket_info(:send_reload, state) do
-    {:reply, {:text, "reload"}, state}
+  def handle_info(:send_reload, state) do
+    {:push, {:text, "reload"}, state}
   end
 
-  def websocket_info(_, state), do: {:ok, state}
+  def handle_info(_, state), do: {:ok, state}
 
   @impl true
-  def terminate(_reason, _mini_req, _state) do
+  def terminate(_reason, _state) do
     put_msg(:info, "Live Reloader: WebSocket disconnected.")
 
     :ok

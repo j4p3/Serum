@@ -2,6 +2,35 @@
 
 ## Unreleased Changes
 
+### Changed
+
+- Serum now builds and runs on current Elixir and Erlang/OTP (tested with
+  Elixir 1.20 and Erlang/OTP 29) and requires Elixir 1.16 or later. All
+  dependencies have been updated to their latest releases.
+
+- Markdown is now rendered by [MDEx](https://hex.pm/packages/mdex) instead of
+  Earmark, which is no longer maintained and has an unpatched XSS advisory
+  (CVE-2026-48591). MDEx follows CommonMark and GitHub Flavored Markdown, so
+  the generated HTML differs in some details:
+
+    - Footnotes are wrapped in `<section class="footnotes">` instead of
+      `<div class="footnotes">`, and footnote references are rendered as
+      `<sup class="footnote-ref">`.
+
+    - Earmark's attribute annotation syntax (`{: .class}`) is not supported.
+
+- The development server is now built on [Bandit](https://hex.pm/packages/bandit)
+  and Plug instead of Microscope and Cowboy, as Microscope is no longer
+  maintained. Requests for a directory without a trailing slash are now
+  redirected to the URL with one.
+
+- Updated Timex to 4.0 and Floki to 0.38.
+
+### Fixed
+
+- The development server now detects file changes when the project directory
+  is located under a directory whose name starts with a dot.
+
 ### Added
 
 - You can now access the full Serum project settings in your templates using

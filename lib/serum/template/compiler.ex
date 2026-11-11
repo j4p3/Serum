@@ -71,7 +71,7 @@ defmodule Serum.Template.Compiler do
     e in EEx.SyntaxError ->
       {:ct_error, e.message, e.line}
 
-    e in [SyntaxError, TokenMissingError] ->
+    e in [SyntaxError, TokenMissingError, MismatchedDelimiterError] ->
       {:ct_error, e.description, e.line}
   end
 end

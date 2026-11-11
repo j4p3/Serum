@@ -9,8 +9,8 @@ jobs:
 
     strategy:
       matrix:
-        otp-version: ['22.3', '23.3', '24.0']
-        elixir-version: ['1.13.3']
+        otp-version: ['29']
+        elixir-version: ['1.20']
 
     env:
       MIX_ENV: test
@@ -23,10 +23,10 @@ jobs:
         elixir-version: ${{ matrix.elixir-version}}
 
     - name: Checkout Code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Cache Dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: |
           _build
